@@ -15,7 +15,7 @@
           colors: {
             tilt: {
               orange: '#FF9500',
-              dark: '#0F0F0F',
+              dark: '#000000', /* pure black */
               card: '#1A1A1A',
             }
           }
@@ -24,16 +24,16 @@
     }
   </script>
 </head>
-<body class="bg-tilt-dark text-white min-h-screen font-sans antialiased">
+<body class="bg-black text-white min-h-screen font-sans antialiased">
   <!-- Hero -->
-  <header class="relative overflow-hidden bg-gradient-to-b from-tilt-dark to-black">
+  <header class="relative">
     <div class="container mx-auto px-6 py-24 md:py-32 text-center relative z-10">
-      <!-- Logo image instead of text title -->
-      <div class="mb-8">
+      <!-- Tilt logo image (main visual at top) -->
+      <div class="mb-10">
         <img 
           src="logo2.jpeg" 
           alt="Tilt Logo" 
-          class="mx-auto h-32 md:h-48 w-auto object-contain"
+          class="mx-auto h-40 md:h-64 w-auto object-contain drop-shadow-2xl"
         />
       </div>
 
@@ -70,17 +70,27 @@
       </div>
       <p class="text-sm text-gray-500 mt-4">Coming soon to Android & iOS</p>
     </div>
-
-    <!-- Background effect -->
-    <div class="absolute inset-0 opacity-20 pointer-events-none">
-      <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_70%,#FF950030_0%,transparent_50%)]"></div>
-    </div>
   </header>
 
-  <!-- Rest of your sections (Features, CTA, Footer) remain unchanged -->
+  <!-- Features section (add your full cards here) -->
+  <section id="features" class="py-20 md:py-32 bg-black">
+    <div class="container mx-auto px-6">
+      <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Why Tilt?</h2>
+      <div class="grid md:grid-cols-3 gap-10 max-w-5xl mx-auto">
+        <div class="bg-tilt-card p-8 rounded-2xl border border-gray-800 hover:border-tilt-orange transition">
+          <div class="text-5xl mb-6">⚔️</div>
+          <h3 class="text-2xl font-bold mb-4">Endless Battles</h3>
+          <p class="text-gray-400">Two movies face off. Swipe to crown your favorite.</p>
+        </div>
+        <!-- Add more feature cards as needed -->
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA and Footer (unchanged) -->
 
   <script>
-    // Form mock
+    // Simple form alert (mock)
     document.querySelector('form')?.addEventListener('submit', (e) => {
       e.preventDefault();
       alert('Thanks! You\'re on the Tilt waitlist 🎬');
