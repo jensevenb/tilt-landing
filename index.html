@@ -5,7 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tilt – Swipe to Rank Movies</title>
   <meta name="description" content="Tinder-style movie battles. Swipe to build your personal leaderboard, streaks, and watchlist. Discover what you truly love." />
+  <meta name="keywords" content="movie ranking, film battles, swipe movies, movie leaderboard, watchlist app" />
+  <meta property="og:title" content="Tilt – Swipe to Rank Movies" />
+  <meta property="og:description" content="Tinder-style movie battles. Build your personal leaderboard and discover what you truly love." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎬</text></svg>">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -15,85 +26,499 @@
           colors: {
             tilt: {
               orange: '#FF9500',
+              orangeLight: '#FFB340',
               dark: '#000000',
-              card: '#1A1A1A',
+              card: '#141414',
+              cardHover: '#1C1C1C',
             }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'float-delayed': 'float 6s ease-in-out 2s infinite',
+            'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
+            'slide-up': 'slide-up 0.6s ease-out',
+            'fade-in': 'fade-in 0.8s ease-out',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-20px)' },
+            },
+            'pulse-glow': {
+              '0%, 100%': { boxShadow: '0 0 20px rgba(255, 149, 0, 0.3)' },
+              '50%': { boxShadow: '0 0 40px rgba(255, 149, 0, 0.6)' },
+            },
+            'slide-up': {
+              '0%': { opacity: '0', transform: 'translateY(30px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            'fade-in': {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
           }
         }
       }
     }
   </script>
+  <style>
+    .gradient-text {
+      background: linear-gradient(135deg, #FF9500 0%, #FFD60A 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-gradient {
+      background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(255, 149, 0, 0.15) 0%, transparent 50%);
+    }
+    .card-gradient {
+      background: linear-gradient(180deg, rgba(255, 149, 0, 0.05) 0%, transparent 100%);
+    }
+    .glow-border {
+      position: relative;
+    }
+    .glow-border::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, #FF9500, #FFD60A, #FF9500);
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .glow-border:hover::before {
+      opacity: 1;
+    }
+    .phone-mockup {
+      filter: drop-shadow(0 25px 50px rgba(255, 149, 0, 0.2));
+    }
+    /* Hide scrollbar but allow scrolling */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
 </head>
-<body class="bg-black text-white min-h-screen font-sans antialiased">
+
+<body class="bg-black text-white min-h-screen font-sans antialiased overflow-x-hidden">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-white/5">
+    <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2">
+        <span class="text-2xl">🎬</span>
+        <span class="text-xl font-bold">Tilt</span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#features" class="text-gray-400 hover:text-white transition">Features</a>
+        <a href="#how-it-works" class="text-gray-400 hover:text-white transition">How It Works</a>
+        <a href="#testimonials" class="text-gray-400 hover:text-white transition">Reviews</a>
+      </div>
+      <a href="#download" class="bg-tilt-orange hover:bg-tilt-orangeLight text-black font-semibold py-2 px-5 rounded-full text-sm transition transform hover:scale-105">
+        Get Early Access
+      </a>
+    </div>
+  </nav>
+
   <!-- Hero -->
-  <header class="relative">
-    <div class="container mx-auto px-6 py-24 md:py-32 text-center relative z-10">
-      <!-- Tilt logo image (main visual at top) -->
-      <div class="mb-10">
-        <img 
-          src="logo2.jpeg" 
-          alt="Tilt Logo" 
-          class="mx-auto h-40 md:h-64 w-auto object-contain drop-shadow-2xl"
-        />
-      </div>
+  <header class="relative min-h-screen flex items-center hero-gradient pt-20">
+    <!-- Decorative elements -->
+    <div class="absolute top-1/4 left-10 w-72 h-72 bg-tilt-orange/10 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-1/4 right-10 w-96 h-96 bg-orange-500/5 rounded-full blur-3xl"></div>
 
-      <p class="text-xl md:text-3xl text-gray-300 mb-10 max-w-3xl mx-auto">
-        Swipe to rank movies like Tinder.<br/>
-        Build your personal leaderboard, defend streaks, and discover what you truly love.
-      </p>
+    <div class="container mx-auto px-6 py-16 md:py-24">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <!-- Left: Text content -->
+        <div class="text-center lg:text-left animate-slide-up">
+          <div class="inline-flex items-center gap-2 bg-tilt-orange/10 border border-tilt-orange/20 rounded-full px-4 py-2 mb-6">
+            <span class="w-2 h-2 bg-tilt-orange rounded-full animate-pulse"></span>
+            <span class="text-sm text-tilt-orange font-medium">Beta launching soon</span>
+          </div>
 
-      <div class="flex flex-col sm:flex-row gap-6 justify-center mb-12">
-        <a href="#features" class="bg-tilt-orange hover:bg-orange-600 text-black font-bold py-5 px-10 rounded-full text-lg transition transform hover:scale-105">
-          See How It Works
-        </a>
-        <a href="mailto:your@email.com?subject=Join%20Tilt%20Beta" class="border-2 border-tilt-orange text-tilt-orange hover:bg-tilt-orange hover:text-black font-bold py-5 px-10 rounded-full text-lg transition transform hover:scale-105">
-          Join Beta Waitlist
-        </a>
-      </div>
+          <h1 class="text-5xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight">
+            Swipe. Rank.<br/>
+            <span class="gradient-text">Discover.</span>
+          </h1>
 
-      <!-- Mock Download Buttons with your local PNGs -->
-      <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-        <a href="#" class="transition transform hover:scale-105">
-          <img 
-            src="googleplay.png" 
-            alt="Get it on Google Play" 
-            class="h-16 w-auto"
-          />
-        </a>
-        <a href="#" class="transition transform hover:scale-105">
-          <img 
-            src="apple.png" 
-            alt="Download on the App Store" 
-            class="h-16 w-auto"
-          />
-        </a>
+          <p class="text-lg md:text-xl text-gray-400 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+            Movie battles, Tinder-style. Pick your favorites, build your leaderboard,
+            defend your streaks, and finally know your <span class="text-white font-medium">true #1 film</span>.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-8">
+            <a href="#download" class="group bg-tilt-orange hover:bg-tilt-orangeLight text-black font-bold py-4 px-8 rounded-full text-lg transition transform hover:scale-105 flex items-center justify-center gap-2">
+              Join the Waitlist
+              <svg class="w-5 h-5 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+              </svg>
+            </a>
+            <a href="#how-it-works" class="border-2 border-white/20 hover:border-white/40 text-white font-semibold py-4 px-8 rounded-full text-lg transition transform hover:scale-105 flex items-center justify-center gap-2">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z"/>
+              </svg>
+              See How It Works
+            </a>
+          </div>
+
+          <!-- Stats -->
+          <div class="flex gap-8 justify-center lg:justify-start text-center">
+            <div>
+              <div class="text-3xl font-bold gradient-text">10K+</div>
+              <div class="text-sm text-gray-500">Movies</div>
+            </div>
+            <div class="w-px bg-white/10"></div>
+            <div>
+              <div class="text-3xl font-bold gradient-text">50K+</div>
+              <div class="text-sm text-gray-500">Battles Daily</div>
+            </div>
+            <div class="w-px bg-white/10"></div>
+            <div>
+              <div class="text-3xl font-bold gradient-text">4.9</div>
+              <div class="text-sm text-gray-500">Rating</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Logo/App Preview -->
+        <div class="relative flex justify-center animate-fade-in">
+          <div class="relative animate-float">
+            <img
+              src="logo2.jpeg"
+              alt="Tilt App"
+              class="w-72 md:w-96 h-auto rounded-3xl phone-mockup"
+            />
+            <!-- Floating badges -->
+            <div class="absolute -left-8 top-1/4 bg-tilt-card border border-white/10 rounded-2xl p-3 shadow-xl animate-float-delayed">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">🏆</span>
+                <div>
+                  <div class="text-xs text-gray-400">Your #1</div>
+                  <div class="text-sm font-semibold">The Godfather</div>
+                </div>
+              </div>
+            </div>
+            <div class="absolute -right-4 bottom-1/3 bg-tilt-card border border-white/10 rounded-2xl p-3 shadow-xl animate-float">
+              <div class="flex items-center gap-2">
+                <span class="text-2xl">🔥</span>
+                <div>
+                  <div class="text-xs text-gray-400">Streak</div>
+                  <div class="text-sm font-semibold">15 Days</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <p class="text-sm text-gray-500 mt-4">Coming soon to Android & iOS</p>
     </div>
   </header>
 
-  <!-- Features section (shortened - expand as needed) -->
-  <section id="features" class="py-20 md:py-32 bg-black">
-    <div class="container mx-auto px-6">
-      <h2 class="text-4xl md:text-5xl font-bold text-center mb-16">Why Tilt?</h2>
-      <div class="grid md:grid-cols-3 gap-10 max-w-5xl mx-auto">
-        <div class="bg-tilt-card p-8 rounded-2xl border border-gray-800 hover:border-tilt-orange transition">
-          <div class="text-5xl mb-6">⚔️</div>
-          <h3 class="text-2xl font-bold mb-4">Endless Battles</h3>
-          <p class="text-gray-400">Two movies face off. Swipe to crown your favorite.</p>
+  <!-- Features Section -->
+  <section id="features" class="py-24 md:py-32 relative">
+    <div class="absolute inset-0 bg-gradient-to-b from-black via-tilt-card/30 to-black"></div>
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">Why You'll Love <span class="gradient-text">Tilt</span></h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+          More than just a movie app. It's your personal cinema journey.
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        <!-- Feature 1 -->
+        <div class="group bg-tilt-card hover:bg-tilt-cardHover p-8 rounded-3xl border border-white/5 hover:border-tilt-orange/30 transition-all duration-300 card-gradient">
+          <div class="w-14 h-14 bg-tilt-orange/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <span class="text-3xl">⚔️</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Epic Movie Battles</h3>
+          <p class="text-gray-400 leading-relaxed">Two films enter, one wins. Swipe right for your favorite in endless head-to-head matchups.</p>
         </div>
-        <!-- Add more cards here -->
+
+        <!-- Feature 2 -->
+        <div class="group bg-tilt-card hover:bg-tilt-cardHover p-8 rounded-3xl border border-white/5 hover:border-tilt-orange/30 transition-all duration-300 card-gradient">
+          <div class="w-14 h-14 bg-tilt-orange/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <span class="text-3xl">🏆</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Personal Leaderboard</h3>
+          <p class="text-gray-400 leading-relaxed">Watch your true favorites rise to the top. Your rankings evolve with every swipe.</p>
+        </div>
+
+        <!-- Feature 3 -->
+        <div class="group bg-tilt-card hover:bg-tilt-cardHover p-8 rounded-3xl border border-white/5 hover:border-tilt-orange/30 transition-all duration-300 card-gradient">
+          <div class="w-14 h-14 bg-tilt-orange/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <span class="text-3xl">🔥</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Streaks & Challenges</h3>
+          <p class="text-gray-400 leading-relaxed">Build daily streaks, complete challenges, and unlock achievements as you rank.</p>
+        </div>
+
+        <!-- Feature 4 -->
+        <div class="group bg-tilt-card hover:bg-tilt-cardHover p-8 rounded-3xl border border-white/5 hover:border-tilt-orange/30 transition-all duration-300 card-gradient">
+          <div class="w-14 h-14 bg-tilt-orange/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <span class="text-3xl">📋</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Smart Watchlist</h3>
+          <p class="text-gray-400 leading-relaxed">Save movies to watch later. Get personalized recommendations based on your taste.</p>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="group bg-tilt-card hover:bg-tilt-cardHover p-8 rounded-3xl border border-white/5 hover:border-tilt-orange/30 transition-all duration-300 card-gradient">
+          <div class="w-14 h-14 bg-tilt-orange/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <span class="text-3xl">👥</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Social Rankings</h3>
+          <p class="text-gray-400 leading-relaxed">Follow friends, compare tastes, and see how your rankings stack up globally.</p>
+        </div>
+
+        <!-- Feature 6 -->
+        <div class="group bg-tilt-card hover:bg-tilt-cardHover p-8 rounded-3xl border border-white/5 hover:border-tilt-orange/30 transition-all duration-300 card-gradient">
+          <div class="w-14 h-14 bg-tilt-orange/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+            <span class="text-3xl">🎯</span>
+          </div>
+          <h3 class="text-xl font-bold mb-3">Genre Filters</h3>
+          <p class="text-gray-400 leading-relaxed">Battle within specific genres. Find your top horror, comedy, or sci-fi films.</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA and Footer (unchanged) -->
+  <!-- How It Works -->
+  <section id="how-it-works" class="py-24 md:py-32 bg-black">
+    <div class="container mx-auto px-6">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">How <span class="gradient-text">Tilt</span> Works</h2>
+        <p class="text-gray-400 text-lg max-w-2xl mx-auto">
+          Three simple steps to discover your true movie taste
+        </p>
+      </div>
+
+      <div class="max-w-4xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8">
+          <!-- Step 1 -->
+          <div class="text-center">
+            <div class="relative mb-6">
+              <div class="w-20 h-20 bg-gradient-to-br from-tilt-orange to-orange-600 rounded-full flex items-center justify-center mx-auto text-3xl font-black text-black">1</div>
+              <div class="hidden md:block absolute top-1/2 left-full w-full h-0.5 bg-gradient-to-r from-tilt-orange/50 to-transparent -translate-y-1/2"></div>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Get Matched</h3>
+            <p class="text-gray-400">Two movies appear. Both are films you know and love (or want to see).</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="text-center">
+            <div class="relative mb-6">
+              <div class="w-20 h-20 bg-gradient-to-br from-tilt-orange to-orange-600 rounded-full flex items-center justify-center mx-auto text-3xl font-black text-black">2</div>
+              <div class="hidden md:block absolute top-1/2 left-full w-full h-0.5 bg-gradient-to-r from-tilt-orange/50 to-transparent -translate-y-1/2"></div>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Swipe to Pick</h3>
+            <p class="text-gray-400">Swipe right for your favorite, left for the other. Quick, instinctive, fun.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="text-center">
+            <div class="relative mb-6">
+              <div class="w-20 h-20 bg-gradient-to-br from-tilt-orange to-orange-600 rounded-full flex items-center justify-center mx-auto text-3xl font-black text-black">3</div>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Build Your List</h3>
+            <p class="text-gray-400">Your personal leaderboard forms. Watch your true #1 emerge over time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section id="testimonials" class="py-24 md:py-32 relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-black via-tilt-card/20 to-black"></div>
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl md:text-5xl font-bold mb-4">What People Are <span class="gradient-text">Saying</span></h2>
+        <p class="text-gray-400 text-lg">Early beta users can't stop swiping</p>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <!-- Testimonial 1 -->
+        <div class="bg-tilt-card p-6 rounded-2xl border border-white/5">
+          <div class="flex items-center gap-1 mb-4">
+            <span class="text-tilt-orange">★★★★★</span>
+          </div>
+          <p class="text-gray-300 mb-4">"Finally settled the debate with my friends about which Marvel movie is actually the best. Turns out it's not what I thought!"</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full"></div>
+            <div>
+              <div class="font-semibold text-sm">Alex M.</div>
+              <div class="text-xs text-gray-500">Film enthusiast</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="bg-tilt-card p-6 rounded-2xl border border-white/5">
+          <div class="flex items-center gap-1 mb-4">
+            <span class="text-tilt-orange">★★★★★</span>
+          </div>
+          <p class="text-gray-300 mb-4">"I'm on a 45-day streak. It's become my morning coffee ritual. Addictive in the best way possible."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-pink-500 to-red-500 rounded-full"></div>
+            <div>
+              <div class="font-semibold text-sm">Sarah K.</div>
+              <div class="text-xs text-gray-500">Movie blogger</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="bg-tilt-card p-6 rounded-2xl border border-white/5">
+          <div class="flex items-center gap-1 mb-4">
+            <span class="text-tilt-orange">★★★★★</span>
+          </div>
+          <p class="text-gray-300 mb-4">"The watchlist feature alone is worth it. I've discovered so many hidden gems through the recommendations."</p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-gradient-to-br from-green-500 to-teal-500 rounded-full"></div>
+            <div>
+              <div class="font-semibold text-sm">Marcus J.</div>
+              <div class="text-xs text-gray-500">Casual viewer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download CTA -->
+  <section id="download" class="py-24 md:py-32 relative">
+    <div class="absolute inset-0 bg-gradient-to-t from-tilt-orange/10 via-transparent to-transparent"></div>
+    <div class="container mx-auto px-6 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to Find Your <span class="gradient-text">#1 Movie?</span></h2>
+        <p class="text-gray-400 text-lg mb-10">
+          Join thousands of film lovers already building their personal leaderboards.
+        </p>
+
+        <!-- Email signup form -->
+        <form class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto mb-10" id="waitlist-form">
+          <input
+            type="email"
+            placeholder="Enter your email"
+            required
+            class="flex-1 bg-tilt-card border border-white/10 rounded-full px-6 py-4 text-white placeholder-gray-500 focus:outline-none focus:border-tilt-orange transition"
+          />
+          <button
+            type="submit"
+            class="bg-tilt-orange hover:bg-tilt-orangeLight text-black font-bold py-4 px-8 rounded-full transition transform hover:scale-105 whitespace-nowrap"
+          >
+            Join Waitlist
+          </button>
+        </form>
+
+        <!-- App Store buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-6">
+          <a href="#" class="transition transform hover:scale-105 opacity-80 hover:opacity-100">
+            <img
+              src="apple.png"
+              alt="Download on the App Store"
+              class="h-14 w-auto"
+            />
+          </a>
+          <a href="#" class="transition transform hover:scale-105 opacity-80 hover:opacity-100">
+            <img
+              src="googleplay.png"
+              alt="Get it on Google Play"
+              class="h-14 w-auto"
+            />
+          </a>
+        </div>
+        <p class="text-sm text-gray-500">Coming soon to iOS & Android</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 border-t border-white/5">
+    <div class="container mx-auto px-6">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center gap-2">
+          <span class="text-2xl">🎬</span>
+          <span class="text-xl font-bold">Tilt</span>
+        </div>
+
+        <div class="flex items-center gap-6 text-sm text-gray-400">
+          <a href="#" class="hover:text-white transition">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition">Terms of Service</a>
+          <a href="mailto:hello@tiltapp.com" class="hover:text-white transition">Contact</a>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <!-- Social icons -->
+          <a href="#" class="w-10 h-10 bg-tilt-card hover:bg-tilt-cardHover rounded-full flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a href="#" class="w-10 h-10 bg-tilt-card hover:bg-tilt-cardHover rounded-full flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="#" class="w-10 h-10 bg-tilt-card hover:bg-tilt-cardHover rounded-full flex items-center justify-center transition">
+            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="text-center mt-8 text-sm text-gray-500">
+        &copy; 2025 Tilt. All rights reserved. Made with 🧡 for movie lovers.
+      </div>
+    </div>
+  </footer>
 
   <script>
-    // Simple form alert (mock)
-    document.querySelector('form')?.addEventListener('submit', (e) => {
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Form submission
+    document.getElementById('waitlist-form')?.addEventListener('submit', function(e) {
       e.preventDefault();
-      alert('Thanks! You\'re on the Tilt waitlist 🎬');
+      const email = this.querySelector('input[type="email"]').value;
+
+      // Show success message
+      this.innerHTML = `
+        <div class="bg-tilt-orange/10 border border-tilt-orange/30 rounded-2xl p-6 text-center w-full">
+          <div class="text-3xl mb-2">🎉</div>
+          <div class="text-lg font-semibold text-white mb-1">You're on the list!</div>
+          <div class="text-sm text-gray-400">We'll notify you when Tilt launches.</div>
+        </div>
+      `;
+    });
+
+    // Add scroll-based animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-slide-up');
+          entry.target.style.opacity = '1';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('section > div').forEach(el => {
+      el.style.opacity = '0';
+      observer.observe(el);
     });
   </script>
 </body>
