@@ -4,7 +4,7 @@ Tinder-style movie battles. Swipe to build your personal leaderboard, defend str
 
 ## Live Demo
 Check out the landing page:  
-[https://jensevenb.github.io/jensevenb/](https://jensevenb.github.io/jensevenb/)
+[https://jensevenb.github.io/tilt-landing/](https://jensevenb.github.io/tilt-landing/)
 
 ![Tilt Landing Page Screenshot](https://via.placeholder.com/800x600?text=Tilt+Landing+Page)  
 *(Add a real screenshot later by uploading an image to the repo and linking it here)*
